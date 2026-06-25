@@ -7,8 +7,18 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
+// AWS RDS requires TLS. Enable SSL automatically when connecting to an RDS
+// endpoint, or explicitly via DATABASE_SSL=true. Local/dev Postgres stays
+// plaintext. (rejectUnauthorized:false trusts the RDS-managed certificate
+// without bundling the AWS CA — fine for free-tier dev; tighten for prod.)
+const connectionString = process.env.DATABASE_URL || "";
+const useSSL =
+  process.env.DATABASE_SSL === "true" ||
+  /\.rds\.amazonaws\.com/.test(connectionString);
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
+  ssl: useSSL ? { rejectUnauthorized: false } : undefined,
 });
 
 async function initSchema() {
