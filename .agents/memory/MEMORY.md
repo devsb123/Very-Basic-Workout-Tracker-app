@@ -1,0 +1,1 @@
+- [Dev server port binding](dev-server-port-binding.md) — Replit workflow port detection only sees servers bound to 0.0.0.0, not 127.0.0.1.

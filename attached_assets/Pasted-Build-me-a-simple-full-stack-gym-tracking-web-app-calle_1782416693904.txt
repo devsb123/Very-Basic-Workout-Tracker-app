@@ -1,0 +1,62 @@
+Build me a simple full-stack gym tracking web app called "IronLog".
+Stack: React (Vite) frontend, Node.js + Express backend, PostgreSQL database. The frontend and backend live in the same repo. Use pg (node-postgres) to connect to the database.
+Note: This app will be deployed to AWS after development. It will run on a single EC2 t2.micro instance with an RDS PostgreSQL database. Keep this in mind — Express should serve the React build folder as static files in production so everything runs from one server, and the database connection should be configurable via a DATABASE_URL environment variable so it can be swapped for the RDS connection string at deploy time.
+
+PROJECT STRUCTURE
+ironlog/
+├── client/         # React Vite app
+├── server/         # Express API
+│   ├── index.js
+│   └── db.js
+├── .env
+└── package.json
+
+DATABASE SCHEMA
+
+Two tables only:
+sqlCREATE TABLE sets (
+  id SERIAL PRIMARY KEY,
+  tab VARCHAR(10),
+  exercise VARCHAR(100),
+  weight NUMERIC,
+  reps INTEGER,
+  logged_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE runs (
+  id SERIAL PRIMARY KEY,
+  distance NUMERIC,
+  duration INTEGER,
+  logged_at TIMESTAMP DEFAULT NOW()
+);
+
+BACKEND — 5 routes total
+POST   /api/sets          — log a set (body: tab, exercise, weight, reps)
+GET    /api/sets?tab=push  — get all sets for a tab
+DELETE /api/sets/:id      — delete a set
+POST   /api/runs          — log a run (body: distance, duration)
+GET    /api/runs          — get all runs
+Read the DB connection from process.env.DATABASE_URL. In production, serve the React build folder as static files from Express.
+
+FRONTEND — 4 tabs
+Push, Pull, Legs tabs all work the same:
+
+Form: exercise name (text input), weight, reps → "Log Set" button → POST /api/sets
+Table below showing past sets for that tab fetched from GET /api/sets?tab=
+Delete button on each row
+
+Running tab:
+
+Form: distance (miles), duration (minutes) → "Log Run" button → POST /api/runs
+List of past runs fetched from GET /api/runs
+Delete button on each row
+
+On mount, each tab fetches its data from the API. No localStorage.
+
+DESIGN
+
+Dark theme, Tailwind CSS, tabs at the top, clean and minimal.
+
+ENV
+
+.env file with DATABASE_URL=postgresql://localhost:5432/ironlog for local dev. Include a README with a note that DATABASE_URL gets replaced with the AWS RDS endpoint at deployment.
