@@ -4,3 +4,6 @@ client/dist/
 .env
 *.log
 .DS_Store
+
+# Chat/agent attachments — not part of the app source
+attached_assets/
