@@ -1,0 +1,103 @@
+Deploy my IronLog app to AWS using only free tier resources. I already have an AWS account.
+Goal: Get the app running on AWS with the frontend and backend served from a single EC2 instance, and the database running on RDS PostgreSQL. At the end, output a summary of the full tech stack and all relevant endpoints/connection info.
+
+CONSTRAINTS — free tier only, no exceptions
+
+EC2: t2.micro or t3.micro only
+RDS: db.t3.micro, PostgreSQL, single AZ, no Multi-AZ, no automated backups beyond the free tier limit
+No Elastic Load Balancer
+No CloudFront
+No NAT Gateway
+No Elastic IPs beyond the one free one
+Storage: gp2, 20GB max on RDS, 8GB on EC2
+
+
+STEP 1 — RDS Setup
+
+Create a PostgreSQL RDS instance (free tier, db.t3.micro)
+Database name: ironlog
+Make note of the RDS endpoint URL
+Set it to publicly accessible for now so EC2 can reach it (we will lock this down via security group)
+Create a security group for RDS that only allows inbound PostgreSQL traffic (port 5432) from the EC2 security group
+
+STEP 2 — EC2 Setup
+
+Launch a t2.micro EC2 instance running Amazon Linux 2023
+Create a security group that allows inbound HTTP (port 80) and SSH (port 22) from anywhere
+Generate and save a .pem key pair for SSH access
+Assign a free Elastic IP to the instance
+
+STEP 3 — Server Setup (via SSH)
+
+SSH into the EC2 instance and run the following:
+
+Install Node.js (v18+) via nvm
+Install git
+Install pm2 globally (npm install -g pm2)
+Clone the GitHub repo: git clone <repo-url>
+Navigate into the project, run npm install in both /client and /server
+Build the React frontend: cd client && npm run build
+Set the DATABASE_URL environment variable pointing to the RDS endpoint
+
+STEP 4 — Database Init
+
+Connect to the RDS instance using the DATABASE_URL and run the table creation SQL:
+
+sqlCREATE TABLE IF NOT EXISTS sets (
+  id SERIAL PRIMARY KEY,
+  tab VARCHAR(10),
+  exercise VARCHAR(100),
+  weight NUMERIC,
+  reps INTEGER,
+  logged_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS runs (
+  id SERIAL PRIMARY KEY,
+  distance NUMERIC,
+  duration INTEGER,
+  logged_at TIMESTAMP DEFAULT NOW()
+);
+STEP 5 — Run the App
+
+Start the Express server with pm2: pm2 start server/index.js --name ironlog
+Set pm2 to restart on reboot: pm2 startup then pm2 save
+Confirm the app is accessible at http://<elastic-ip>
+
+
+STEP 6 — Output a deployment summary in this exact format:
+=============================
+ IRONLOG — DEPLOYMENT SUMMARY
+=============================
+
+FRONTEND
+  Framework:        React (Vite)
+  Served by:        Express (static build)
+  URL:              http://<elastic-ip>
+
+BACKEND
+  Runtime:          Node.js v__
+  Framework:        Express
+  Process manager: PM2
+  Port:             80 (or 3000 if proxied)
+  Host:             EC2 t2.micro — Amazon Linux 2023
+
+DATABASE
+  Engine:           PostgreSQL __
+  Host:             <rds-endpoint>
+  Port:             5432
+  Database name:    ironlog
+  Instance class:   db.t3.micro
+
+INFRASTRUCTURE
+  EC2 Instance ID:  i-__________
+  Elastic IP:       __.__.__.___
+  RDS Identifier:   ironlog-db
+  Region:           us-east-1 (or your region)
+  Monthly cost:     $0.00 (free tier)
+
+GITHUB REPO
+  URL:              https://github.com/<your-username>/ironlog
+  Deploy method:    git clone on EC2
+
+=============================
