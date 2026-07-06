@@ -1,0 +1,19 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored, so your password never gets committed.
+
+# Your public IP for SSH access. Find it with: curl ifconfig.me
+# Then append /32 (meaning "just this one IP").
+my_ip = "YOUR.PUBLIC.IP.HERE/32"
+
+# RDS master password. Use letters and numbers only -- avoid @ : / " and spaces,
+# which would break the database connection URL. Minimum 8 characters.
+db_password = "ChangeMe1234"
+
+# --- Optional overrides (defaults shown, uncomment to change) ---
+# region            = "us-east-1"
+# aws_profile       = "ironlog-admin"
+# key_name          = "ironlog-key"
+# db_username       = "ironlog_admin"
+# db_name           = "ironlog"
+# instance_type     = "t2.micro"
+# db_instance_class = "db.t3.micro"

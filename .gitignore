@@ -7,3 +7,14 @@ client/dist/
 
 # Chat/agent attachments — not part of the app source
 attached_assets/
+
+# Terraform — never commit state (may contain secrets) or your tfvars
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+!terraform/*.tfvars.example
+terraform/crash.log
+terraform/crash.*.log
+terraform/override.tf
+terraform/override.tf.json
