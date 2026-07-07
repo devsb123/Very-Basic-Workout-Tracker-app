@@ -5,9 +5,12 @@ set -euo pipefail
 exec > /var/log/ironlog-bootstrap.log 2>&1
 
 # --- System packages ---
-# libcap provides setcap, used below to let Node bind port 80 as a non-root user.
+# AL2023's default nodejs package is Node 18, but Tailwind v4 (@tailwindcss/oxide)
+# requires Node >= 20. Use NodeSource to get Node 20 before installing the app.
 dnf update -y
-dnf install -y nodejs npm git libcap
+dnf install -y git libcap
+curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
+dnf install -y nodejs
 
 # --- pm2 process manager ---
 npm install -g pm2
