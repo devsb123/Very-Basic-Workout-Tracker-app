@@ -1,6 +1,7 @@
+node_modules/
 client/node_modules/
-# node_modules intentionally committed (server prod deps only, 4.9MB) so EC2 needs no npm install
 # client/dist intentionally committed so EC2 needs no build step
+# server/bundle.js intentionally committed — pre-bundled server (no npm install on EC2)
 .env
 *.log
 .DS_Store
