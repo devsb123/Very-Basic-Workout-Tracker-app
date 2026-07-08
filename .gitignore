@@ -8,6 +8,7 @@ client/node_modules/
 
 # Personal developer notes — keep local, not for GitHub
 DEVELOPER_GUIDE.md
+DEVELOPER_GUIDE_NOTES.md
 
 # Chat/agent attachments — not part of the app source
 attached_assets/

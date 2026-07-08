@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "EKJCuhENnYHO4DXNU0Y6_"
+uri = "file://DEVELOPER_GUIDE_NOTES.md"
+type = "text"
+title = "IronLog — Developer Guide (Apple Notes format)"
