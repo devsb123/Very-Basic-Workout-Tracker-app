@@ -6,6 +6,9 @@ client/node_modules/
 *.log
 .DS_Store
 
+# Personal developer notes — keep local, not for GitHub
+DEVELOPER_GUIDE.md
+
 # Chat/agent attachments — not part of the app source
 attached_assets/
 
