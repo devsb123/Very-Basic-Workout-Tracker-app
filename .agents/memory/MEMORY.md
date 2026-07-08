@@ -1,1 +1,3 @@
 - [Dev server port binding](dev-server-port-binding.md) — Replit workflow port detection only sees servers bound to 0.0.0.0, not 127.0.0.1.
+- [EC2 deployment strategy](ec2-deploy-strategy.md) — t2.micro can't build; pre-build in Replit, commit artifacts, EC2 only serves
+- [pm2 env vars on EC2](pm2-env-vars.md) — inline env vars with pm2 start are fragile; use export before pm2 start
