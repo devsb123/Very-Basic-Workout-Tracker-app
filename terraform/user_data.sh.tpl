@@ -5,8 +5,7 @@ set -euo pipefail
 exec > /var/log/ironlog-bootstrap.log 2>&1
 
 # --- System packages ---
-# AL2023's default nodejs package is Node 18, but Tailwind v4 (@tailwindcss/oxide)
-# requires Node >= 20. Use NodeSource to get Node 20 before installing the app.
+# Uses NodeSource for Node 20 (AL2023 default is Node 18).
 dnf update -y
 dnf install -y git libcap
 curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
@@ -15,12 +14,17 @@ dnf install -y nodejs
 # --- pm2 process manager ---
 npm install -g pm2
 
-# --- Clone & build the app ---
+# --- Clone the app ---
+# The React client is pre-built (client/dist committed to git).
+# EC2 never runs a build — it only installs the 4 server packages.
 cd /home/ec2-user
 git clone ${repo_url} app
 cd app
-npm install
-npm run build
+
+# Install server production dependencies only (express, cors, pg, dotenv).
+# Fast: ~30 seconds, no native binaries.
+npm install --omit=dev
+
 chown -R ec2-user:ec2-user /home/ec2-user/app
 
 # --- Allow Node to bind privileged port 80 without running as root ---

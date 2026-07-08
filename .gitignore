@@ -1,6 +1,6 @@
 node_modules/
 client/node_modules/
-client/dist/
+# client/dist is intentionally committed so EC2 can deploy without a build step
 .env
 *.log
 .DS_Store
