@@ -1,6 +1,6 @@
-node_modules/
 client/node_modules/
-# client/dist is intentionally committed so EC2 can deploy without a build step
+# node_modules intentionally committed (server prod deps only, 4.9MB) so EC2 needs no npm install
+# client/dist intentionally committed so EC2 needs no build step
 .env
 *.log
 .DS_Store
